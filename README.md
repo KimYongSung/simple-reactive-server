@@ -47,3 +47,10 @@ public class DataBaseConfig extends AbstractR2dbcConfiguration {
 }
 ```
 
+## 3. R2DBC 드라이버 방언 
+
+* R2DBC 드라이버는 스프링의 DialectResolver가 SpringFactories 를 사용하여 클래스패스의 방언들을 검색 및 로딩함.
+
+## 4. R2DBC Repository
+
+* @EnableR2dbcRepositories 를 사용
