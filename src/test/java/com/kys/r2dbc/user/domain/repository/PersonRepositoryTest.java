@@ -31,15 +31,12 @@ public class PersonRepositoryTest {
         Mono<Person> personMono = personRepository.save(dto.toEntity());
 
         // then
-        Mono<Person> personMono1 = personRepository.findById(1l);
-
         Person person = personMono.block();
+
+        Mono<Person> personMono1 = personRepository.findById(person.getId());
+
         Person findPerson = personMono1.block();
 
         assertThat(person).isEqualTo(findPerson);
-
-        /*personMono.subscribe(person -> {
-            Mono<Person> personMono1 = personRepository.findById(1l);
-        });*/
     }
 }

@@ -5,11 +5,11 @@
 * https://projectreactor.io/docs/core/release/reference/index.html
 * https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html
 * https://docs.spring.io/spring-data/data-r2dbc/docs/1.1.x/reference/html/#reference
+* https://spring.io/projects/spring-data-r2dbc
 
 리엑티브 database driver
 
 * https://github.com/r2dbc/r2dbc-h2
-* https://spring.io/projects/spring-data-r2dbc
 * https://github.com/mirromutth/r2dbc-mysql
 * https://github.com/r2dbc/r2dbc-postgresql
 * https://github.com/jasync-sql/jasync-sql
@@ -121,8 +121,38 @@ public class TestDataBaseConfig {
 }
 ```
 
+## 8. 저장 테스트
+
+```java
+@Test
+@DisplayName("person 저장 테스트")
+public void personSaveTest(){
+
+    // given
+    PersonDTO dto = PersonDTO.builder()
+                             .address("서울시 강북구 수유동")
+                             .age(32)
+                             .name("kys0213")
+                             .build();
+
+    // when
+    Mono<Person> personMono = personRepository.save(dto.toEntity());
+
+    // then
+    Person person = personMono.block();
+
+    Mono<Person> personMono1 = personRepository.findById(person.getId());
+
+    Person findPerson = personMono1.block();
+
+    assertThat(person).isEqualTo(findPerson);
+}
+```
+
 ## 현재 발생한 문제점
 
 * spring 내부에서 SimpleR2dbcRepository 를 사용하여 쿼리를 실행함.
 * save 호출시 Entity에 선언된 @Id를 기준으로 값이 null 이면 insert null이 아니면 update 호출.
-  * jpa 와 유사한 방식으로 사용할 방안이 없나 리서치 중
+  * schema에 auto_increment 를 추가하여 처리
+  * 비동기로 실행하다보니 디버깅으로 따라가기 너무 힘드네요... 추후 다시 도전을...
+  

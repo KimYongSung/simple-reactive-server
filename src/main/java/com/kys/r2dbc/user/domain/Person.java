@@ -1,6 +1,7 @@
 package com.kys.r2dbc.user.domain;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -12,6 +13,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @Getter
 @Table(value = "PERSON")
+@EqualsAndHashCode
 public class Person {
 
     @Id
