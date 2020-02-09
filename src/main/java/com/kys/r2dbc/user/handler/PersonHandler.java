@@ -24,7 +24,7 @@ public class PersonHandler {
      */
     public Mono<ServerResponse> add(ServerRequest request){
         return request.bodyToMono(PersonDTO.class)
-                      .map(personService::save)
+                      .map(personService::personSave)
                       .flatMap(response -> ServerResponse.ok().body(response,PersonResponse.class));
     }
 
