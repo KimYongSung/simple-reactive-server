@@ -149,10 +149,49 @@ public void personSaveTest(){
 }
 ```
 
-## 현재 발생한 문제점
+## 9. jooq 사용해보기
+
+엔티티의 식별자 값과 복잡한 쿼리들 작성의 경우 직접 sql을 작성하는 것 보다 jooq를 사용하여 쿼리를 작성하는것이 조금 더 typesafe 한 구성을 사용할 수 있다고 생각하여 설정.
+
+jooq를 사용하여 쿼리를 생성하고, r2dbc를 사용하여 호출하는 컨셉
+
+참조 : https://github.com/jOOQ/jOOQ/issues/6298
+
+## 99. 현재 발생한 문제점
 
 * spring 내부에서 SimpleR2dbcRepository 를 사용하여 쿼리를 실행함.
 * save 호출시 Entity에 선언된 @Id를 기준으로 값이 null 이면 insert null이 아니면 update 호출.
-  * schema에 auto_increment 를 추가하여 처리
-  * 비동기로 실행하다보니 디버깅으로 따라가기 너무 힘드네요... 추후 다시 도전을...
+  * PersistentEntityIsNewStrategy 에서 isNew 메소드를 호출하여 최초 저장 여부를 판단한다.
+    1. @id 선언된 값이 null 인 경우
+    2. @id 선언된 타입이 기본형이 아닐 때, 값이 null 인 경우
+    3. @id 가 정수형이고 값이 0 인 경우
+```java
+    @Override
+    public boolean isNew(Object entity) {
+
+        // @id를 선언한 값을 가져온다.
+        Object value = valueLookup.apply(entity); 
+        
+        // 값이 null 일 경우 true
+        if (value == null) { 
+            return true;
+        }
+
+        // valueType이 null이 아니거나 기본형 타입이 아닌 경우 true
+        if (valueType != null && !valueType.isPrimitive()) {
+            return value == null;
+        }
+        
+        // 부모가 Number 클래스인 경우 값 비교 
+        if (Number.class.isInstance(value)) {
+            return ((Number) value).longValue() == 0;
+        }
+        
+        throw new IllegalArgumentException(
+                String.format("Could not determine whether %s is new! Unsupported identifier or version property!", entity));
+    }
+```  
+  * schema에 auto_increment 를 추가하여 처리함. 
+    * auto_increment가 아닌 경우 저장하는 메소드를 직접 구현하는게 편하다.
+    * 비동기로 실행하다보니 디버깅으로 따라가기 너무 힘드네요... 추후 다시 도전을...
   
