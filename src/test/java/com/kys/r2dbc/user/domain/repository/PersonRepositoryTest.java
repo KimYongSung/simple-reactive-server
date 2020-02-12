@@ -37,17 +37,21 @@ public class PersonRepositoryTest {
     public void personFindTest(){
 
         // given
-        givenPersonInsert();
+        Person person = givenPersonInsert();
 
         // when
+        Person findPerson = personRepository.findByName(person.getName()).block();
+
+        // then
+        verifier.verifyExistAndEqualsByPerson(person, findPerson);
     }
 
-    private void givenPersonInsert() {
+    private Person givenPersonInsert() {
         PersonDTO dto = makeParameter();
 
         Mono<Person> personMono = personRepository.save(dto.toEntity());
 
-        Person person = personMono.block();
+        return personMono.block();
     }
 
     private PersonDTO makeParameter() {

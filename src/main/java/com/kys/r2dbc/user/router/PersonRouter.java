@@ -1,6 +1,7 @@
 package com.kys.r2dbc.user.router;
 
 import com.kys.r2dbc.user.handler.PersonHandler;
+import com.kys.r2dbc.user.handler.SamplePersonHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
