@@ -28,10 +28,14 @@ public class PersonHandler {
                       .flatMap(response -> ServerResponse.ok().body(response,PersonResponse.class));
     }
 
+    /**
+     * person 조회
+     * @param request
+     * @return
+     */
     public Mono<ServerResponse> search(ServerRequest request){
-        /*return request.bodyToMono(PersonDTO.class)
-                      .flatMapMany(personDTO -> personRepository.findByName(personDTO.getName()))
-                      .flatMap();*/
-        return null;
+        return request.bodyToMono(PersonDTO.class)
+                      .map(personService::findPersonByName)
+                      .flatMap(response -> ServerResponse.ok().body(response,PersonResponse.class));
     }
 }

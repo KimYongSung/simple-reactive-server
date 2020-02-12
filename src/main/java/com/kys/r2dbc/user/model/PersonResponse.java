@@ -8,9 +8,9 @@ import lombok.ToString;
 @ToString
 public class PersonResponse {
 
-    private String code;
+    private final String code;
 
-    private String message;
+    private final String message;
 
     public PersonResponse(ErrorCode errorCode) {
         this.code = errorCode.getCode();
